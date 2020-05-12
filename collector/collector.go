@@ -40,7 +40,7 @@ func (collector *Metrics) Collect(ch chan<- prometheus.Metric) {
 
 	for _, issue := range collectedIssues.Issues {
 		createdTimestamp := convertToUnixTime(issue.Fields.Created)
-		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.Name, issue.Fields.Summary)
+		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.DisplayName, issue.Fields.Summary)
 	}
 }
 
@@ -72,7 +72,6 @@ func fetchJiraIssues() (jiraIssue, error) {
 		}
 
 		url := fmt.Sprintf("%s/rest/api/2/search?jql=%s", cfg.JiraURL, cfg.JiraJql)
-		log.Infof(fmt.Sprintf("URL check1 %s", url))
 		resp, err := fetchAPIResults(url, cfg.JiraUsername, cfg.JiraToken)
 
 		err = json.Unmarshal(resp, &ji)
