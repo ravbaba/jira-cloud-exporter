@@ -20,7 +20,10 @@ type jiraIssue struct {
 			Status struct {
 				Name string `json:"name"`
 			} `json:"status"`
-			Summary string `json:"summary"`
+			Summary   string `json:"summary"`
+			Issuetype struct {
+				Name string `json:"name"`
+			} `json:"issuetype"`
 		} `json:"fields"`
 		Key string `json:"key"`
 	} `json:"issues"`
