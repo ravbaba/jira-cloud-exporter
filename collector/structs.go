@@ -27,6 +27,11 @@ type jiraIssue struct {
 			Priority struct {
 				Name string `json:"name"`
 			} `json:"priority"`
+			Progress struct {
+				Progress int `json:"progress"`
+				Total    int `json:"total"`
+				Percent  int `json:"percent"`
+			} `json:"progress"`
 		} `json:"fields"`
 		Key string `json:"key"`
 	} `json:"issues"`
