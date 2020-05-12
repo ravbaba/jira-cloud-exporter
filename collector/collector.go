@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,7 +20,7 @@ func JiraCollector() *Metrics {
 	return &Metrics{
 		issue: prometheus.NewDesc(prometheus.BuildFQName("jira", "cloud", "issue"),
 			"Shows the number of issues matching the JQL",
-			[]string{"status", "project", "key", "assignee", "summary", "issuetype", "priority"}, nil,
+			[]string{"status", "project", "key", "assignee", "summary", "issuetype", "priority", "progress", "total", "percent"}, nil,
 		),
 	}
 }
@@ -40,7 +41,7 @@ func (collector *Metrics) Collect(ch chan<- prometheus.Metric) {
 
 	for _, issue := range collectedIssues.Issues {
 		createdTimestamp := convertToUnixTime(issue.Fields.Created)
-		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.DisplayName, issue.Fields.Summary, issue.Fields.Issuetype.Name, issue.Fields.Priority.Name)
+		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.DisplayName, issue.Fields.Summary, issue.Fields.Issuetype.Name, issue.Fields.Priority.Name, strconv.Itoa(issue.Fields.Progress.Progress), strconv.Itoa(issue.Fields.Progress.Total), strconv.Itoa(issue.Fields.Progress.Percent))
 	}
 }
 
