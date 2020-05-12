@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/jwholdsworth/jira-cloud-exporter/collector"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/ravbaba/jira-cloud-exporter/collector"
 	log "github.com/sirupsen/logrus"
 )
 

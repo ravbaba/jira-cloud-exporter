@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jwholdsworth/jira-cloud-exporter/config"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/ravbaba/jira-cloud-exporter/config"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,7 +19,7 @@ func JiraCollector() *Metrics {
 	return &Metrics{
 		issue: prometheus.NewDesc(prometheus.BuildFQName("jira", "cloud", "issue"),
 			"Shows the number of issues matching the JQL",
-			[]string{"status", "project", "key", "assignee"}, nil,
+			[]string{"status", "project", "key", "assignee", "summary"}, nil,
 		),
 	}
 }
@@ -40,7 +40,7 @@ func (collector *Metrics) Collect(ch chan<- prometheus.Metric) {
 
 	for _, issue := range collectedIssues.Issues {
 		createdTimestamp := convertToUnixTime(issue.Fields.Created)
-		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.Name)
+		ch <- prometheus.MustNewConstMetric(collector.issue, prometheus.CounterValue, createdTimestamp, issue.Fields.Status.Name, issue.Fields.Project.Name, issue.Key, issue.Fields.Assignee.Name, issue.Fields.Summary)
 	}
 }
 
@@ -72,6 +72,7 @@ func fetchJiraIssues() (jiraIssue, error) {
 		}
 
 		url := fmt.Sprintf("%s/rest/api/2/search?jql=%s", cfg.JiraURL, cfg.JiraJql)
+		log.Infof(fmt.Sprintf("URL check1 %s", url))
 		resp, err := fetchAPIResults(url, cfg.JiraUsername, cfg.JiraToken)
 
 		err = json.Unmarshal(resp, &ji)
