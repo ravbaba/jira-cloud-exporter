@@ -24,6 +24,9 @@ type jiraIssue struct {
 			Issuetype struct {
 				Name string `json:"name"`
 			} `json:"issuetype"`
+			Priority struct {
+				Name string `json:"name"`
+			} `json:"priority"`
 		} `json:"fields"`
 		Key string `json:"key"`
 	} `json:"issues"`
